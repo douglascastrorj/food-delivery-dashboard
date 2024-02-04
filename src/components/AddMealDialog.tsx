@@ -1,20 +1,40 @@
-import { Button } from "@/components/ui/button"
+'use client';
+
 import {
     Dialog,
+    DialogClose,
     DialogContent,
     DialogDescription,
-    DialogFooter,
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+} from "@/components/ui/dialog";
 import AddIcon from '@mui/icons-material/Add';
-import AddMealForm from "./AddMealForm";
+import AddMealForm, { MealFormInput } from "./AddMealForm";
+import React, { useRef } from "react";
+import { useSession } from "next-auth/react";
 
 
 export function AddMealDialog() {
+
+    const myRef = useRef<HTMLSpanElement>(null);
+    const {data: session} = useSession();
+
+
+    const onSubmit = async (data: MealFormInput) => {
+        console.log('dialog submit', data)
+        const user = session?.user
+        const res = await fetch('/api/meal', {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({...data, ...user})
+        })
+
+        myRef.current?.click();
+    }
+
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -31,9 +51,13 @@ export function AddMealDialog() {
                 </DialogHeader>
 
                 <div className="mt-4">
-                    <AddMealForm />
+                    <AddMealForm callback={onSubmit} />
+                    <DialogClose asChild>
+                        <div className="hidden">
+                            <span ref={myRef}> Cancelar </span>
+                        </div>
+                    </DialogClose>
                 </div>
-
             </DialogContent>
         </Dialog>
     )

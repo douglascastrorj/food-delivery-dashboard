@@ -1,3 +1,5 @@
+'use client'
+
 import React from 'react'
 import { useForm, SubmitHandler, FieldErrors } from "react-hook-form"
 import { z } from "zod";
@@ -7,25 +9,28 @@ const mealSchema = z.object({
     name: z.string().nonempty('Meal name is required'),
     description: z.string().nonempty('Meal description is required'),
     price: z.coerce.number().min(0.1, 'Price must be greater than 0'),
-    image: z.string(),
+    image: z.string().optional(),
 });
 
-type MealFormInput = {
+export type MealFormInput = {
     name: string;
     description: string;
     price: number;
-    image: string;
+    image?: string;
 }
 
+interface AddMealFormProps {
+    callback: (data: MealFormInput) => void;
+}
 
-export default function AddMealForm() {
+export default function AddMealForm(props: AddMealFormProps) {
 
     const { register, handleSubmit, formState: { errors } } = useForm<MealFormInput>({
         resolver: zodResolver(mealSchema)
     });
 
-    const onSubmit: SubmitHandler<MealFormInput> = (data) => {
-        console.log(data)
+    const onSubmit: SubmitHandler<MealFormInput> = async (data: MealFormInput) => {
+        if(props.callback) props.callback(data);
     }
 
     return (

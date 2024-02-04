@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-import User from "../../../models/user";
+import User from "../../../database/User";
 import { connectToDB } from "../../../database/db";
 
 
