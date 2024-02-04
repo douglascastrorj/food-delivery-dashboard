@@ -8,15 +8,6 @@ interface MealListProps {
 
 export default function MealList(props: MealListProps) {
 
-    useEffect(() => {
-        const fetchteste = async () => {
-            const response = await fetch('/api/teste');
-            const data = await response.json();
-            console.log(data);
-        }
-        fetchteste();
-    }, [])
-
     const { meals } = props;
     return (
         <div className='flex gap-4 flex-col flex-nowrap justify-center items-center md:flex-wrap md:flex-row md:justify-start'>

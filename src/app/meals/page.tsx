@@ -4,6 +4,7 @@ import React from 'react'
 import AddIcon from '@mui/icons-material/Add';
 import MealList from '@/components/MealList';
 import { IMeal } from '@/models/meal';
+import { AddMealDialog } from '@/components/AddMealDialog';
 
 export default function MealsPage() {
 
@@ -20,7 +21,8 @@ export default function MealsPage() {
                     <h1 className="text-4xl font-bold text-gradient mb-2">Meals</h1>
                 </div>
                 <button className='bg-gradient text-white rounded-xl flex justify-center items-center w-[300px] h-12 hover:shadow-lg hover:shadow-neutral-700'>
-                  <AddIcon />  <span className='font-semibold'>Add Meal</span>
+                  {/* <AddIcon />  <span className='font-semibold'>Add Meal</span> */}
+                  <AddMealDialog />
                 </button>
             </div>
 

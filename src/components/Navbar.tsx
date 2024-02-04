@@ -25,10 +25,11 @@ export default function Navbar() {
   console.log(data)
   const router = useRouter();
   useEffect(() => {
+    
     if (status !== 'authenticated') {
       router.replace('/')
     }
-  }, []);
+  }, [status]);
 
   const logout = () => {
     signOut();
@@ -37,7 +38,10 @@ export default function Navbar() {
   return (
     <nav className='border-b-2 border-neutral-800 w-full p-4 flex justify-between items-center'>
       <div className='flex gap-2'>
-        <FastfoodOutlinedIcon width={24} />
+
+        <Link href={'/dashboard'}>
+          <FastfoodOutlinedIcon width={24} />
+        </Link>
 
         {status === 'authenticated' &&
           <ul className='flex space-x-2'>
