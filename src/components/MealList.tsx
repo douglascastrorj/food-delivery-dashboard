@@ -1,19 +1,38 @@
+'use client'
 import React, { useEffect } from 'react'
 import { IMeal } from '../models/meal';
 import Image from 'next/image';
+import { useSession } from 'next-auth/react';
 
-interface MealListProps {
-    meals: IMeal[]
-}
+export default function MealList() {
 
-export default function MealList(props: MealListProps) {
+    const [meals, setMeals] = React.useState<IMeal[]>([]);
+    const {data: session, status} = useSession();
 
-    const { meals } = props;
+    useEffect(() => {
+        const listMeals = async () => {
+            try {
+                if(status !== 'authenticated') return;
+                const userId = session?.user?.email;
+                const res = await fetch('/api/meal/' + userId);
+                console.log('meals', res)
+                const data = await res.json();
+                console.log(data)
+                setMeals(data);
+            } catch(e) {
+                console.error(e);
+            }
+        }
+        listMeals();
+    }, [status]);
+
     return (
         <div className='flex gap-4 flex-col flex-nowrap justify-center items-center md:flex-wrap md:flex-row md:justify-start'>
             {
                 meals.map((meal: IMeal) => (
-                    <MealCard key={meal.id} meal={meal} />
+                    <div key={meal.id}>
+                        <MealCard meal={meal} />
+                    </div>
                 ))
             }
         </div>

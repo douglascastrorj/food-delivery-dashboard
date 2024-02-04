@@ -22,11 +22,9 @@ import {
 export default function Navbar() {
   const { update, data, status } = useSession();
 
-  console.log(data)
   const router = useRouter();
   useEffect(() => {
-    
-    if (status !== 'authenticated') {
+    if (status === 'unauthenticated') {
       router.replace('/')
     }
   }, [status]);

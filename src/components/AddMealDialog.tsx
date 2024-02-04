@@ -18,11 +18,11 @@ import { useSession } from "next-auth/react";
 export function AddMealDialog() {
 
     const myRef = useRef<HTMLSpanElement>(null);
-    const {data: session} = useSession();
-
+    const {data: session, status} = useSession();
 
     const onSubmit = async (data: MealFormInput) => {
-        console.log('dialog submit', data)
+        if(status !== 'authenticated') return;
+        
         const user = session?.user
         const res = await fetch('/api/meal', {
             method: 'POST',
