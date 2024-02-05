@@ -17,7 +17,7 @@ export const POST = async (req, res) => {
             name,
             description,
             price,
-            image: null,
+            image,
             userId: user._id
         });
 

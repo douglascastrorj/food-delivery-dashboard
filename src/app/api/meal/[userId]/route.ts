@@ -1,18 +1,24 @@
 import { connectToDB } from "@/database/db";
 import MealSchema from "@/database/mealSchema";
 import User from "@/database/User";
-import { isLoggedIn } from "@/lib/authUtils";
+import { extractServerSession, isLoggedIn } from "@/lib/authUtils";
 
 
 export const GET = async (req, res) => {
     
     const params = res.params;
 
-    const isLogged = await isLoggedIn(req, res);
-    if (!isLogged) {
+    const session = await extractServerSession(req, res);
+    if (!!session === false) {
         return new Response(JSON.stringify({ message: 'Not logged in' }), { status: 401 });
     }
-    const user = await User.findOne({ email: params.userId });
+
+    const email = session.user?.email;
+    if(params.userId !== email) {
+        return new Response(JSON.stringify({ message: 'Unauthorized' }), { status: 401 });
+    }
+
+    const user = await User.findOne({ email });
     
     await connectToDB();
     const meals = await MealSchema.find({

@@ -13,19 +13,21 @@ const mealSchema = z.object({
     name: z.string().nonempty('Meal name is required'),
     description: z.string().nonempty('Meal description is required'),
     price: z.coerce.number().min(0.1, 'Price must be greater than 0'),
-    image: z.instanceof(FileList)
-    .refine((files: FileList) => files?.[0]?.size <= MAX_FILE_SIZE, `Max image size is 5MB.`)
-    .refine(
-      (files: FileList) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
-      "Only .jpg, .jpeg, .png and .webp formats are supported."
-    ),
+    // image: z.instanceof(FileList)
+    // .refine((files: FileList) => files?.[0]?.size <= MAX_FILE_SIZE, `Max image size is 5MB.`)
+    // .refine(
+    //   (files: FileList) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
+    //   "Only .jpg, .jpeg, .png and .webp formats are supported."
+    // ),
+    image: z.string().nonempty('Image is required')
 });
 
 export type MealFormInput = {
     name: string;
     description: string;
     price: number;
-    image: FileList;
+    // image: FileList;
+    image: string;
 }
 
 interface AddMealFormProps {
@@ -74,7 +76,7 @@ export default function AddMealForm(props: AddMealFormProps) {
 
                 <div className='flex flex-col gap-1'>
                     <label htmlFor="image" className='text-sm text-neutral-400 font-semibold'> Image </label>
-                    <input {...register('image')} type="file" min={0} placeholder="Image"  />
+                    <input {...register('image')} type="text" placeholder="Image" className='w-full h-12 bg-neutral-900 text-white p-4 rounded-md' />
                     {errors.image && <p className='text-red-500 w-full'>{errors.image.message}</p>}
                 </div>
 
