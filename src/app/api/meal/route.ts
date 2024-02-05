@@ -1,12 +1,14 @@
 import { connectToDB } from "@/database/db";
 import MealSchema from "@/database/mealSchema";
 import User from "@/database/User";
+import { isLoggedIn } from "@/lib/authUtils";
 
 
 export const POST = async (req, res) => {
 
     try {
-        const { name, description, price, user: { email } = null, image = null } = await req.json();
+
+        const { name, description, price, email, image = null } = await req.json();
         await connectToDB();
 
         const user = await User.findOne({ email });
@@ -15,7 +17,7 @@ export const POST = async (req, res) => {
             name,
             description,
             price,
-            image,
+            image: null,
             userId: user._id
         });
 

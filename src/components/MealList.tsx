@@ -29,8 +29,8 @@ export default function MealList() {
     return (
         <div className='flex gap-4 flex-col flex-nowrap justify-center items-center md:flex-wrap md:flex-row md:justify-start'>
             {
-                meals.map((meal: IMeal) => (
-                    <div key={meal.id}>
+                meals.map((meal: IMeal, index) => (
+                    <div key={index}>
                         <MealCard meal={meal} />
                     </div>
                 ))

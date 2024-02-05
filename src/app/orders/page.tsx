@@ -1,6 +1,18 @@
-import React from 'react'
+'use client'
+
+import React, {useEffect} from 'react'
 
 export default function OrdersPage() {
+
+  useEffect(() => {
+    const getTeste = async () => {
+      const response = await fetch('/api/teste')
+      const data = await response.json()
+      console.log(data)
+    }
+    getTeste()
+  }, [])
+
   return (
     <div className="flex flex-col items-center justify-center p-24">
         <div>

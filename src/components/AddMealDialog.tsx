@@ -15,7 +15,7 @@ import React, { useRef } from "react";
 import { useSession } from "next-auth/react";
 
 
-export function AddMealDialog() {
+export function AddMealDialog() {    
 
     const myRef = useRef<HTMLSpanElement>(null);
     const {data: session, status} = useSession();
@@ -29,7 +29,7 @@ export function AddMealDialog() {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({...data, ...user})
+            body: JSON.stringify({...data, email: user?.email})
         })
 
         myRef.current?.click();

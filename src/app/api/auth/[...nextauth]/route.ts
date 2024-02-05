@@ -6,9 +6,10 @@ import GoogleProvider from "next-auth/providers/google";
 import User from "../../../../database/User";
 import { connectToDB } from "../../../../database/db";
 import { compare } from "bcrypt";
+import { NextAuthOptions } from "next-auth";
 
 
-const handler = NextAuth({
+export const authOptions: NextAuthOptions = {
     providers: [
         GithubProvider({
             clientId: process.env.GITHUB_ID || '',
@@ -76,6 +77,8 @@ const handler = NextAuth({
     //     }
     // },
     secret: process.env.NEXTAUTH_SECRET,
-})
+}
 
-export { handler as GET, handler as POST , handler as authOptions };
+const handler = NextAuth(authOptions)
+
+export { handler as GET, handler as POST };
