@@ -1,4 +1,5 @@
 'use client'
+import { upload } from '@/app/actions/upload';
 
 import { supabase } from '@/lib/supabase'
 import React, {useEffect} from 'react'
@@ -9,28 +10,13 @@ export default function OrdersPage() {
   const [uploading, setUploading] = React.useState(false)
 
 
-  async function uploadAvatar(event) {
+  async function uploadAvatar(event: any) {
     try {
       setUploading(true)
-
-      if (!event.target.files || event.target.files.length === 0) {
-        throw new Error('You must select an image to upload.')
-      }
-
-      const file = event.target.files[0]
-      const fileExt = file.name.split('.').pop()
-      const fileName = `${Math.random()}.${fileExt}`
-      const filePath = `${fileName}`
-
-      const { data, error } = await supabase.storage
-          .from('food-delivery-restaurants/profile')
-          .upload(`profile_${file.name}`, file);
-
-      console.log(data, error)
-      if (error) {
-        throw error
-      }
-
+      let formData = new FormData();
+      formData.append('file', event.target.files[0])
+      const { response, error } = await upload(formData)
+      console.log(response)
     } catch (error: any) {
       alert(error.message)
     } finally {
@@ -54,9 +40,13 @@ export default function OrdersPage() {
             <h1 className="text-3xl font-bold">Orders</h1>
             <p className="text-lg">Find and manage your Orders</p>
 
-            <input type="file" accept="image/*"
-          onChange={uploadAvatar}
-          disabled={uploading} />
+            {/* <form > */}
+              <input name='file' type="file" accept="image/*"
+                      onChange={uploadAvatar}
+                      disabled={uploading} 
+              />
+              <button type="submit">Upload</button>
+            {/* </form> */}
         </div>
     </div>
   )
