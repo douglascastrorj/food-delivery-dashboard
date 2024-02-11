@@ -15,16 +15,18 @@ import {
 } from "@/components/ui/table";
 
 import { Pencil2Icon, TrashIcon } from '@radix-ui/react-icons'
+import { Skeleton } from './ui/skeleton';
 
 interface IMealListProps {
     meals: IMeal[];
+    loading: boolean;
     onDelete: (id: string) => void;
     onEdit: (id: string) => void;
 }
 
 export default function MealList(props: IMealListProps) {
 
-    const { meals } = props;
+    const { meals, loading } = props;
 
     return (
         <div className='flex flex-col gap-8'>
@@ -40,25 +42,46 @@ export default function MealList(props: IMealListProps) {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {meals.map((meal, index) => (
-                        <TableRow key={index}>
-                            <TableCell className="flex justify-center">
-                                {meal.image && <Image className='rounded-xl' alt={meal.name} src={meal.image} width={40} height={40} />} </TableCell>
-                            <TableCell>{meal.name}</TableCell>
-                            <TableCell>{meal.description}</TableCell>
-                            <TableCell>{meal.price.toLocaleString("pt-BR", {style:"currency", currency:"BRL"})}</TableCell>
-                            <TableCell>
-                                <div className='flex gap-4'>
-                                    <Pencil2Icon 
-                                        onClick={() => props.onEdit(meal._id)}
-                                        className="w-5 h-5 text-neutral-400 cursor-pointer" />
-                                    <TrashIcon 
-                                        onClick={() => props.onDelete(meal._id)}
-                                        className="w-5 h-5 text-neutral-400 cursor-pointer" />
-                                </div>
-                            </TableCell>
-                        </TableRow>
-                    ))}
+                    {loading == false ?
+                        meals.map((meal, index) => (
+                            <TableRow key={index}>
+                                <TableCell className="flex justify-center">
+                                    {meal.image && <Image className='rounded-xl' alt={meal.name} src={meal.image} width={40} height={40} />} </TableCell>
+                                <TableCell>{meal.name}</TableCell>
+                                <TableCell>{meal.description}</TableCell>
+                                <TableCell>{meal.price.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</TableCell>
+                                <TableCell>
+                                    <div className='flex gap-4'>
+                                        <Pencil2Icon
+                                            onClick={() => props.onEdit(meal._id)}
+                                            className="w-5 h-5 text-neutral-400 cursor-pointer" />
+                                        <TrashIcon
+                                            onClick={() => props.onDelete(meal._id)}
+                                            className="w-5 h-5 text-neutral-400 cursor-pointer" />
+                                    </div>
+                                </TableCell>
+                            </TableRow>
+                        ))
+                        : Array.from({ length: 5 }, (_, index) => (
+                            <TableRow key={index}>
+                                <TableCell className="flex justify-center">
+                                    <Skeleton className="h-10 w-10 rounded-xl bg-neutral-700" />
+                                </TableCell>
+                                <TableCell>
+                                    <Skeleton className="w-[200px] h-[20px] bg-neutral-700" />
+                                </TableCell>
+                                <TableCell>
+                                    <Skeleton className="w-full h-[20px] bg-neutral-700" />                                </TableCell>
+                                <TableCell>
+                                    <Skeleton className="w-[100px] h-[20px] bg-neutral-700" />
+                                </TableCell>
+                                <TableCell>
+                                    <Skeleton className="w-[100px] h-[20px] bg-neutral-700" />
+                                </TableCell>
+
+                            </TableRow>
+                        ))
+                    }
                 </TableBody>
 
             </Table>

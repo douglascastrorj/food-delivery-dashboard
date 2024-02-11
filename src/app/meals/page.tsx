@@ -6,39 +6,33 @@ import { AddMealDialog } from '@/components/AddMealDialog';
 import { IMeal } from '@/models/meal';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
-import {
-    Pagination,
-    PaginationContent,
-    PaginationEllipsis,
-    PaginationItem,
-    PaginationLink,
-    PaginationNext,
-    PaginationPrevious,
-} from "@/components/ui/pagination";
-
+import { CustomPagination } from '@/components/CustomPagination';
 
 
 export default function MealsPage() {
 
     const router = useRouter();
     const [meals, setMeals] = React.useState<IMeal[]>([]);
+    const [loading, setLoading] = React.useState(false);
 
     const searchParams = useSearchParams();
     const pathname = usePathname();
     const page = searchParams.get('page') || '1';
-    const limit = 2;
+    const limit = 5;
 
     const [lastPage, setLastPage] = React.useState(1);
 
     const listMeals = async () => {
         try {
-            // const userId = session?.user?.email;
+            setLoading(true);
             const res = await fetch(`/api/meal?limit=${limit}&page=${page}`);
             const data = await res.json();
             setMeals(data.meals);
             setLastPage(Math.ceil(data.count / limit));
+            setLoading(false);
         } catch (e) {
             console.error(e);
+            setLoading(false);
         }
     }
 
@@ -56,6 +50,10 @@ export default function MealsPage() {
         const newPage = Math.max(parseInt(page) - 1, 1);
         if (newPage < 1) return;
         router.push(`${pathname}?page=${newPage}`);
+    }
+
+    const handleSelectPage = (page: number) => {
+        router.push(`${pathname}?page=${page}`);
     }
 
     const onAdd = (meal: IMeal) => {
@@ -85,14 +83,15 @@ export default function MealsPage() {
 
             <div className='flex flex-col gap-4'>
 
-                <MealList meals={meals} onDelete={onDelete} onEdit={onEdit} />
+                <MealList loading={loading} meals={meals} onDelete={onDelete} onEdit={onEdit} />
 
-                <MealListPagination
+                <CustomPagination
                     page={parseInt(page)}
                     limit={limit}
                     totalPages={lastPage}
                     onNext={handleNext}
                     onPrevious={handlePrevious}
+                    onSelectPage={handleSelectPage}
                 />
             </div>
         </div>
@@ -101,47 +100,3 @@ export default function MealsPage() {
 
 
 
-interface MealListPaginationProps {
-    page: number;
-    limit: number;
-    totalPages: number;
-    onNext: () => void;
-    onPrevious: () => void;
-}
-
-export function MealListPagination(props: MealListPaginationProps) {
-    const { page, totalPages } = props;
-    const nextButtonDisabled = page === totalPages;
-    const previousButtonDisabled = page === 1;
-
-    const disabledButtonStyle = 'text-gray-500 hover:text-gray-500 cursor-not-allowed';
-
-    return (
-        <Pagination>
-            <PaginationContent>
-                <PaginationItem>
-                    <div className={previousButtonDisabled ? disabledButtonStyle : ''}>
-                        <PaginationPrevious onClick={props.onPrevious} href="#" />
-                    </div>
-                </PaginationItem>
-                {/* <PaginationItem>
-                    <PaginationLink href="#">1</PaginationLink>
-                </PaginationItem>
-                <PaginationItem>
-                    <PaginationLink href="#" isActive>
-                        2
-                    </PaginationLink>
-                </PaginationItem>
-                <PaginationItem>
-                    <PaginationLink href="#">3</PaginationLink>
-                </PaginationItem> */}
-
-                <PaginationItem>
-                    <div className={nextButtonDisabled ? disabledButtonStyle : ''}>
-                        <PaginationNext onClick={props.onNext} href="#" />
-                    </div>
-                </PaginationItem>
-            </PaginationContent>
-        </Pagination>
-    )
-}

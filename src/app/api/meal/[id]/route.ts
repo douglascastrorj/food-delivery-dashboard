@@ -2,6 +2,7 @@ import { connectToDB } from "@/database/db";
 import MealSchema from "@/database/mealSchema";
 import User from "@/database/User";
 import { extractServerSession, isLoggedIn } from "@/lib/authUtils";
+import { supabase } from "@/lib/supabase";
 
 
 export const DELETE = async (req, res) => {
@@ -25,6 +26,19 @@ export const DELETE = async (req, res) => {
 
     if(meals.length === 0) {
         return new Response(JSON.stringify({ message: 'Meal not found' }), { status: 404 });
+    }
+
+    try {
+        //food-delivery-restaurants/meals/cafe.jpg
+        const filePath = meals[0].image.split('food-delivery-restaurants/')[1];
+        const folder = filePath.split('/')[0];
+        const fileName = filePath.split('/')[1];
+
+        await supabase.storage
+            .from(`food-delivery-restaurants/${folder}`)
+            .remove([fileName]);
+    } catch(e){
+        console.log('error deleting image', e);
     }
 
     const meal = MealSchema.deleteOne({ _id: id }).exec();
