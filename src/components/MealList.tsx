@@ -45,12 +45,12 @@ export default function MealList(props: IMealListProps) {
                     {loading == false ?
                         meals.map((meal, index) => (
                             <TableRow key={index}>
-                                <TableCell className="flex justify-center">
-                                    {meal.image && <Image className='rounded-xl' alt={meal.name} src={meal.image} width={40} height={40} />} </TableCell>
-                                <TableCell>{meal.name}</TableCell>
-                                <TableCell>{meal.description}</TableCell>
-                                <TableCell>{meal.price.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</TableCell>
-                                <TableCell>
+                                <TableCell className="flex justify-center h-14">
+                                    {meal.image && <Image className='rounded-xl' alt={meal.name} src={meal.image} width={56} height={56} />} </TableCell>
+                                <TableCell className='h-14'>{meal.name}</TableCell>
+                                <TableCell className='h-14'>{meal.description}</TableCell>
+                                <TableCell className='h-14'>{meal.price.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</TableCell>
+                                <TableCell className='h-14'>
                                     <div className='flex gap-4'>
                                         <Pencil2Icon
                                             onClick={() => props.onEdit(meal._id)}
@@ -65,7 +65,7 @@ export default function MealList(props: IMealListProps) {
                         : Array.from({ length: 5 }, (_, index) => (
                             <TableRow key={index}>
                                 <TableCell className="flex justify-center">
-                                    <Skeleton className="h-10 w-10 rounded-xl bg-neutral-700" />
+                                    <Skeleton className="h-14 w-14 rounded-xl bg-neutral-700" />
                                 </TableCell>
                                 <TableCell>
                                     <Skeleton className="w-[200px] h-[20px] bg-neutral-700" />

@@ -5,6 +5,7 @@ import { useForm, SubmitHandler, FieldErrors } from "react-hook-form"
 import { any, z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { upload } from '@/app/actions/upload';
+import { ReloadIcon } from '@radix-ui/react-icons';
 
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
@@ -35,11 +36,15 @@ interface AddMealFormProps {
 
 export default function AddMealForm(props: AddMealFormProps) {
 
+    const [loading, setLoading] = React.useState(false);
+
     const { register, handleSubmit, formState: { errors } } = useForm<MealFormInput>({
         resolver: zodResolver(mealSchema)
     });
 
     const onSubmit: SubmitHandler<MealFormInput> = async (data: MealFormInput) => {
+
+        setLoading(true);
 
         const formData = new FormData();
         formData.append('file', data.image);
@@ -49,9 +54,11 @@ export default function AddMealForm(props: AddMealFormProps) {
         
         if(response) {
             const path = response.fullPath;
-            if(props.callback) props.callback({...data, imagePath: path});   
+            if(props.callback) await props.callback({...data, imagePath: path});   
+            setLoading(false);
         } if (error) {
             console.log(error)
+            setLoading(false);
         }
     }
 
@@ -84,7 +91,10 @@ export default function AddMealForm(props: AddMealFormProps) {
                     {errors.image && <p className='text-red-500 w-full'>{errors.image.message}</p>}
                 </div>
 
-                <button type='submit' className='w-full h-12 bg-purple-500 text-white p-2 mt-4 rounded-md self-center'> Create Meal </button>
+                <button disabled={loading} type='submit' className='w-full h-12 bg-purple-500 text-white p-2 mt-4 rounded-md self-center flex gap justify-center items-center disabled:bg-neutral-500'> 
+                    {loading && <ReloadIcon className='w-5 h-5 animate-spin mr-2' />}
+                    Create Meal 
+                </button>
             </form>
 
         </div>
