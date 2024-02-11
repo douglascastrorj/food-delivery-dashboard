@@ -23,14 +23,15 @@ export default function Navbar() {
   const { update, data, status } = useSession();
 
   const router = useRouter();
-  useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.replace('/')
-    }
-  }, [status]);
+  // useEffect(() => {
+  //   if (status === 'unauthenticated') {
+  //     router.replace('/')
+  //   }
+  // }, [status]);
 
   const logout = () => {
     signOut();
+    router.replace('/')
   }
 
   return (

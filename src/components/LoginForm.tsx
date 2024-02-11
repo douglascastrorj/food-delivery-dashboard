@@ -79,9 +79,8 @@ export default function LoginForm() {
               redirect: false,
               callbackUrl: '/'
             })
-            console.log('login',res)
 
-            if(res?.ok) router.push('/dashboard');
+            if(res?.ok) router.push('/meals');
           } catch (e) {
             console.log(e);
           }

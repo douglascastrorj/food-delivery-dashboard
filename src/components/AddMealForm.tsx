@@ -2,33 +2,31 @@
 
 import React from 'react'
 import { useForm, SubmitHandler, FieldErrors } from "react-hook-form"
-import { z } from "zod";
+import { any, z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod"
-import { supabase } from '@/lib/supabase';
+import { upload } from '@/app/actions/upload';
+
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
+type _FileList = any[];
+
 const mealSchema = z.object({
     name: z.string().nonempty('Meal name is required'),
     description: z.string().nonempty('Meal description is required'),
-    price: z.coerce.number().min(0.1, 'Price must be greater than 0'),
-    // image: z.instanceof(FileList)
-    // .refine((files: FileList) => files?.[0]?.size <= MAX_FILE_SIZE, `Max image size is 5MB.`)
-    // .refine(
-    //   (files: FileList) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
-    //   "Only .jpg, .jpeg, .png and .webp formats are supported."
-    // ),
-    image: z.string().nonempty('Image is required')
+    price: z.coerce.number().multipleOf(0.01).min(0.1, 'Price must be greater than 0'),
+    image: z.any()
+    .transform((files: any) => files?.[0])
+    .refine((file: File) => file?.size <= MAX_FILE_SIZE, `Max image size is 5MB.`)
+    .refine(
+      (file: File) => ACCEPTED_IMAGE_TYPES.includes(file.type),
+      "Only .jpg, .jpeg, .png and .webp formats are supported."
+    ),
+    imagePath: z.string().optional()
 });
 
-export type MealFormInput = {
-    name: string;
-    description: string;
-    price: number;
-    // image: FileList;
-    image: string;
-}
+export type MealFormInput = z.infer<typeof mealSchema>;
 
 interface AddMealFormProps {
     callback: (data: MealFormInput) => void;
@@ -41,14 +39,19 @@ export default function AddMealForm(props: AddMealFormProps) {
     });
 
     const onSubmit: SubmitHandler<MealFormInput> = async (data: MealFormInput) => {
-        if(props.callback) props.callback(data);
-        // const { data: supabaseData, error } = await supabase
-        // .storage
-        // .from('food-delivery-restaurants')
-        // .upload('meals/upload.jpg', data.image[0], {
-        //     cacheControl: '3600',
-        //     upsert: false
-        // })
+
+        const formData = new FormData();
+        formData.append('file', data.image);
+        formData.append('folder', 'files');
+
+        const { response, error }: {response: any, error: any} = await upload(formData)
+        
+        if(response) {
+            const path = response.fullPath;
+            if(props.callback) props.callback({...data, imagePath: path});   
+        } if (error) {
+            console.log(error)
+        }
     }
 
     return (
@@ -76,7 +79,7 @@ export default function AddMealForm(props: AddMealFormProps) {
 
                 <div className='flex flex-col gap-1'>
                     <label htmlFor="image" className='text-sm text-neutral-400 font-semibold'> Image </label>
-                    <input {...register('image')} type="text" placeholder="Image" className='w-full h-12 bg-neutral-900 text-white p-4 rounded-md' />
+                    <input {...register('image')} type="file" placeholder="Image" className='w-full h-12 bg-neutral-900 text-white p-4 rounded-md' />
                     {errors.image && <p className='text-red-500 w-full'>{errors.image.message}</p>}
                 </div>
 

@@ -17,10 +17,10 @@ export const GET = async (req, res) => {
     if(params.userId !== email) {
         return new Response(JSON.stringify({ message: 'Unauthorized' }), { status: 401 });
     }
-
-    const user = await User.findOne({ email });
     
     await connectToDB();
+    const user = await User.findOne({ email });
+    
     const meals = await MealSchema.find({
         userId: user._id
     });

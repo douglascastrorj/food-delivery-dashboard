@@ -1,14 +1,13 @@
 import { connectToDB } from "@/database/db";
 import MealSchema from "@/database/mealSchema";
 import User from "@/database/User";
-import { isLoggedIn } from "@/lib/authUtils";
-
+import { extractServerSession, isLoggedIn } from "@/lib/authUtils";
 
 export const POST = async (req, res) => {
 
     try {
 
-        const { name, description, price, email, image = null } = await req.json();
+        const { name, description, price, email, imagePath = null } = await req.json();
         await connectToDB();
 
         const user = await User.findOne({ email });
@@ -17,7 +16,7 @@ export const POST = async (req, res) => {
             name,
             description,
             price,
-            image,
+            image: `${process.env.SUPABASE_STORAGE_URL}${imagePath}`,
             userId: user._id
         });
 
@@ -26,4 +25,23 @@ export const POST = async (req, res) => {
         console.log(e)
         return new Response(JSON.stringify(e), { status: 500 });
     }
+}
+
+
+
+
+export const GET = async (req, res) => {
+    
+    const session = await extractServerSession(req, res);
+    console.log('session', session)
+
+    const email = session?.user?.email;
+
+    await connectToDB();
+    
+    const user = await User.findOne({ email });
+    const meals = await MealSchema.find({
+        userId: user._id
+    });
+    return new Response(JSON.stringify(meals), { status: 200 });
 }

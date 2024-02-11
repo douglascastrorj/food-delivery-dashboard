@@ -13,9 +13,13 @@ import AddIcon from '@mui/icons-material/Add';
 import AddMealForm, { MealFormInput } from "./AddMealForm";
 import React, { useRef } from "react";
 import { useSession } from "next-auth/react";
+import { IMeal } from "@/models/meal";
 
+interface AddMealDialogProps {
+    onAdd?: (meal: IMeal) => void;
+}
 
-export function AddMealDialog() {    
+export function AddMealDialog(props: AddMealDialogProps) {    
 
     const myRef = useRef<HTMLSpanElement>(null);
     const {data: session, status} = useSession();
@@ -30,8 +34,10 @@ export function AddMealDialog() {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({...data, email: user?.email})
-        })
+        });
 
+        const meal = await res.json();
+        if(props.onAdd) props.onAdd(meal);
         myRef.current?.click();
     }
 
