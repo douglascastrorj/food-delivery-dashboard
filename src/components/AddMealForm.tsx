@@ -77,9 +77,9 @@ export default function AddMealForm(props: AddMealFormProps) {
                     {errors.price && <p className='text-red-500 w-full'>{errors.price.message}</p>}
                 </div>
 
-                <div className='flex flex-col gap-1'>
+                <div className='flex flex-col gap justify-center'>
                     <label htmlFor="image" className='text-sm text-neutral-400 font-semibold'> Image </label>
-                    <input {...register('image')} type="file" placeholder="Image" className='w-full h-12 bg-neutral-900 text-white p-4 rounded-md' />
+                    <input {...register('image')} type="file" placeholder="Image" className='w-full bg-neutral-900 text-white p-4' />
                     {errors.image && <p className='text-red-500 w-full'>{errors.image.message}</p>}
                 </div>
 

@@ -1,9 +1,30 @@
 'use client'
-import React, { useEffect } from 'react'
+import React from 'react'
 import { IMeal } from '../models/meal';
 import Image from 'next/image';
-import { useSession } from 'next-auth/react';
 
+import {
+    Pagination,
+    PaginationContent,
+    PaginationEllipsis,
+    PaginationItem,
+    PaginationLink,
+    PaginationNext,
+    PaginationPrevious,
+} from "@/components/ui/pagination";
+
+import {
+    Table,
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableFooter,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
+
+import { Pencil2Icon, TrashIcon } from '@radix-ui/react-icons'
 
 interface IMealListProps {
     meals: IMeal[];
@@ -11,34 +32,72 @@ interface IMealListProps {
 
 export default function MealList(props: IMealListProps) {
 
-    const {meals} = props;
+    const { meals } = props;
 
     return (
-        <div className='flex gap-4 flex-col flex-nowrap justify-center items-center md:flex-wrap md:flex-row md:justify-between p-4 md:p-8'>
-            {
-                meals.map((meal: IMeal, index) => (
-                    <div key={index}>
-                        <MealCard meal={meal} />
-                    </div>
-                ))
-            }
+        <div className='flex flex-col gap-8'>
+
+            <Table className='bg-transparent'>
+                <TableHeader>
+                    <TableRow className='hover:bg-transparent bg-transparent'>
+                        <TableHead className="w-[100px] text-center">Meal</TableHead>
+                        <TableHead>Name</TableHead>
+                        <TableHead>Description</TableHead>
+                        <TableHead>Price</TableHead>
+                        <TableHead> Actions </TableHead>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    {meals.map((meal, index) => (
+                        <TableRow key={index}>
+                            <TableCell className="flex justify-center">
+                                {meal.image && <Image className='rounded-xl' alt={meal.name} src={meal.image} width={40} height={40} />} </TableCell>
+                            <TableCell>{meal.name}</TableCell>
+                            <TableCell>{meal.description}</TableCell>
+                            <TableCell>{meal.price}</TableCell>
+                            <TableCell>
+                                <div className='flex gap-4'>
+                                    <Pencil2Icon className="w-5 h-5 text-neutral-400 cursor-pointer" />
+                                    <TrashIcon className="w-5 h-5 text-neutral-400 cursor-pointer" />
+                                </div>
+                            </TableCell>
+                        </TableRow>
+                    ))}
+                </TableBody>
+
+            </Table>
+
+            <MealListPagination />
         </div>
     )
 }
 
-const MealCard = (props: { meal: IMeal }) => {
-    const meal = props.meal;
+
+export function MealListPagination() {
     return (
-        <div className='rounded-lg shadow-lg mb-4 border border-neutral-600 w-[400px] h-[350px] rounded-xl flex flex-col relative overflow-hidden'>
-            {meal.image && <Image className='absolute top-0' width={400} height={200} src={meal.image} alt={meal.name}/>}
-            <div className='p-4 absolute top-[200px] bg-neutral-950 w-full h-full'>
-                <h1 className='text-2xl font-semibold text-neutral-200'>{meal.name}</h1>
-                <p className='text-neutral-400'>{meal.description}</p>
-                <span className='text-neutral-200 font-bold text-xl mt-4'>
-                    R$ { meal.price.toLocaleString("en-US", {style:"currency", currency:"USD"})}
-                </span>
-            </div>
-            
-        </div>
+        <Pagination>
+            <PaginationContent>
+                <PaginationItem>
+                    <PaginationPrevious href="#" />
+                </PaginationItem>
+                <PaginationItem>
+                    <PaginationLink href="#">1</PaginationLink>
+                </PaginationItem>
+                <PaginationItem>
+                    <PaginationLink href="#" isActive>
+                        2
+                    </PaginationLink>
+                </PaginationItem>
+                <PaginationItem>
+                    <PaginationLink href="#">3</PaginationLink>
+                </PaginationItem>
+                <PaginationItem>
+                    <PaginationEllipsis />
+                </PaginationItem>
+                <PaginationItem>
+                    <PaginationNext href="#" />
+                </PaginationItem>
+            </PaginationContent>
+        </Pagination>
     )
 }

@@ -5,6 +5,7 @@ import MealList from '@/components/MealList';
 import { AddMealDialog } from '@/components/AddMealDialog';
 import { IMeal } from '@/models/meal';
 
+
 export default function MealsPage() {
 
     const [meals, setMeals] = React.useState<IMeal[]>([]);
@@ -16,7 +17,7 @@ export default function MealsPage() {
                 const res = await fetch('/api/meal');
                 const data = await res.json();
                 setMeals(data);
-            } catch(e) {
+            } catch (e) {
                 console.error(e);
             }
         }
@@ -29,7 +30,7 @@ export default function MealsPage() {
 
     return (
         <div className="flex flex-col p-4 w-full h-full gap-2">
-            <div className='flex justify-between items-center mb-4'>
+            <div className='flex justify-between items-center mb-8'>
                 <div>
                     <h1 className="text-4xl font-bold text-gradient mb-2">Meals</h1>
                 </div>
