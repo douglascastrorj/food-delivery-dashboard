@@ -29,6 +29,7 @@ export default function MealsPage() {
             const data = await res.json();
             setMeals(data.meals);
             setLastPage(Math.ceil(data.count / limit));
+            // setTimeout(() => setLoading(false), 2000);
             setLoading(false);
         } catch (e) {
             console.error(e);

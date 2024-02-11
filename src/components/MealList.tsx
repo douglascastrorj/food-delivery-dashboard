@@ -44,7 +44,7 @@ export default function MealList(props: IMealListProps) {
                 <TableBody>
                     {loading == false ?
                         meals.map((meal, index) => (
-                            <TableRow key={index}>
+                            <TableRow className='hover:bg-neutral-900' key={index}>
                                 <TableCell className="flex justify-center h-14">
                                     {meal.image && <Image className='rounded-xl' alt={meal.name} src={meal.image} width={56} height={56} />} </TableCell>
                                 <TableCell className='h-14'>{meal.name}</TableCell>
@@ -54,10 +54,10 @@ export default function MealList(props: IMealListProps) {
                                     <div className='flex gap-4'>
                                         <Pencil2Icon
                                             onClick={() => props.onEdit(meal._id)}
-                                            className="w-5 h-5 text-neutral-400 cursor-pointer" />
+                                            className="w-5 h-5 text-neutral-400 cursor-pointer text-purple-500 hover:scale-150 transition-all duration-300" />
                                         <TrashIcon
                                             onClick={() => props.onDelete(meal._id)}
-                                            className="w-5 h-5 text-neutral-400 cursor-pointer" />
+                                            className="w-5 h-5 text-neutral-400 cursor-pointer text-red-700 hover:scale-150 transition-all duration-300" />
                                     </div>
                                 </TableCell>
                             </TableRow>
