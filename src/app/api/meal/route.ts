@@ -2,6 +2,7 @@ import { connectToDB } from "@/database/db";
 import MealSchema from "@/database/mealSchema";
 import User from "@/database/User";
 import { extractServerSession, isLoggedIn } from "@/lib/authUtils";
+import { NextRequest } from "next/server";
 
 export const POST = async (req, res) => {
 
@@ -30,10 +31,12 @@ export const POST = async (req, res) => {
 
 
 
-export const GET = async (req, res) => {
-    
+export const GET = async (req: NextRequest, res) => {
+
+    const page = parseInt(req.nextUrl.searchParams.get('page') as string) || 1;
+    const limit = parseInt(req.nextUrl.searchParams.get('limit') as string) || 1;
+        
     const session = await extractServerSession(req, res);
-    console.log('session', session)
 
     const email = session?.user?.email;
 
@@ -41,7 +44,13 @@ export const GET = async (req, res) => {
     
     const user = await User.findOne({ email });
     const meals = await MealSchema.find({
-        userId: user._id
-    });
-    return new Response(JSON.stringify(meals), { status: 200 });
+        userId: user._id,
+    }) 
+    .skip((page-1) * limit)
+    .limit(limit);
+
+    const count = await MealSchema.countDocuments({ userId: user._id });
+    
+
+    return new Response(JSON.stringify({meals, count}), { status: 200 });
 }

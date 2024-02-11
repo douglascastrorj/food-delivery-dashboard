@@ -4,16 +4,6 @@ import { IMeal } from '../models/meal';
 import Image from 'next/image';
 
 import {
-    Pagination,
-    PaginationContent,
-    PaginationEllipsis,
-    PaginationItem,
-    PaginationLink,
-    PaginationNext,
-    PaginationPrevious,
-} from "@/components/ui/pagination";
-
-import {
     Table,
     TableBody,
     TableCaption,
@@ -73,35 +63,6 @@ export default function MealList(props: IMealListProps) {
 
             </Table>
 
-            <MealListPagination />
         </div>
-    )
-}
-
-
-export function MealListPagination() {
-    return (
-        <Pagination>
-            <PaginationContent>
-                <PaginationItem>
-                    <PaginationPrevious href="#" />
-                </PaginationItem>
-                <PaginationItem>
-                    <PaginationLink href="#">1</PaginationLink>
-                </PaginationItem>
-                <PaginationItem>
-                    <PaginationLink href="#" isActive>
-                        2
-                    </PaginationLink>
-                </PaginationItem>
-                <PaginationItem>
-                    <PaginationLink href="#">3</PaginationLink>
-                </PaginationItem>
-                
-                <PaginationItem>
-                    <PaginationNext href="#" />
-                </PaginationItem>
-            </PaginationContent>
-        </Pagination>
     )
 }
