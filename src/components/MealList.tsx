@@ -28,6 +28,8 @@ import { Pencil2Icon, TrashIcon } from '@radix-ui/react-icons'
 
 interface IMealListProps {
     meals: IMeal[];
+    onDelete: (id: string) => void;
+    onEdit: (id: string) => void;
 }
 
 export default function MealList(props: IMealListProps) {
@@ -54,11 +56,15 @@ export default function MealList(props: IMealListProps) {
                                 {meal.image && <Image className='rounded-xl' alt={meal.name} src={meal.image} width={40} height={40} />} </TableCell>
                             <TableCell>{meal.name}</TableCell>
                             <TableCell>{meal.description}</TableCell>
-                            <TableCell>{meal.price}</TableCell>
+                            <TableCell>{meal.price.toLocaleString("pt-BR", {style:"currency", currency:"BRL"})}</TableCell>
                             <TableCell>
                                 <div className='flex gap-4'>
-                                    <Pencil2Icon className="w-5 h-5 text-neutral-400 cursor-pointer" />
-                                    <TrashIcon className="w-5 h-5 text-neutral-400 cursor-pointer" />
+                                    <Pencil2Icon 
+                                        onClick={() => props.onEdit(meal._id)}
+                                        className="w-5 h-5 text-neutral-400 cursor-pointer" />
+                                    <TrashIcon 
+                                        onClick={() => props.onDelete(meal._id)}
+                                        className="w-5 h-5 text-neutral-400 cursor-pointer" />
                                 </div>
                             </TableCell>
                         </TableRow>
@@ -91,9 +97,7 @@ export function MealListPagination() {
                 <PaginationItem>
                     <PaginationLink href="#">3</PaginationLink>
                 </PaginationItem>
-                <PaginationItem>
-                    <PaginationEllipsis />
-                </PaginationItem>
+                
                 <PaginationItem>
                     <PaginationNext href="#" />
                 </PaginationItem>

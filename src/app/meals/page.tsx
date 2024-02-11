@@ -4,6 +4,7 @@ import React, { useEffect } from 'react'
 import MealList from '@/components/MealList';
 import { AddMealDialog } from '@/components/AddMealDialog';
 import { IMeal } from '@/models/meal';
+import { Console } from 'console';
 
 
 export default function MealsPage() {
@@ -28,6 +29,18 @@ export default function MealsPage() {
         setMeals([...meals, meal]);
     }
 
+    const onDelete = async (id: string) => {
+        console.log('delete', id);
+        await fetch(`/api/meal/${id}`, {
+            method: 'DELETE'
+        });
+        setMeals(meals.filter(meal => meal._id !== id));
+    }
+
+    const onEdit =  async (id: string) => {
+        console.log('edit', id);
+    }
+
     return (
         <div className="flex flex-col p-4 w-full h-full gap-2">
             <div className='flex justify-between items-center mb-8'>
@@ -37,7 +50,7 @@ export default function MealsPage() {
                 <AddMealDialog onAdd={onAdd} />
             </div>
 
-            <MealList meals={meals} />
+            <MealList meals={meals} onDelete={onDelete} onEdit={onEdit} />
         </div>
     )
 }

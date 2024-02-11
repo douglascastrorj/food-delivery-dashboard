@@ -18,9 +18,10 @@ const mealSchema = z.object({
     price: z.coerce.number().multipleOf(0.01).min(0.1, 'Price must be greater than 0'),
     image: z.any()
     .transform((files: any) => files?.[0])
+    .refine((file: File) => file != null && file != undefined, `Image is required.`)
     .refine((file: File) => file?.size <= MAX_FILE_SIZE, `Max image size is 5MB.`)
     .refine(
-      (file: File) => ACCEPTED_IMAGE_TYPES.includes(file.type),
+      (file: File) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
       "Only .jpg, .jpeg, .png and .webp formats are supported."
     ),
     imagePath: z.string().optional()
